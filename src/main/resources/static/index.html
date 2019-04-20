@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>用户登录</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="assets/css/bootstrap.css" rel="stylesheet">
+	<!--external css-->
+	<link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+
+	<!-- Custom styles for this template -->
+	<link href="assets/css/style.css" rel="stylesheet">
+	<link href="assets/css/style-responsive.css" rel="stylesheet">
+	<style type="text/css">
+		.err {
+			margin: 20px;
+			font-size: 14px;
+			color: red
+		}
+	</style>
+</head>
+
+<body>
+<div id="login-page">
+	<!--<div id="app" style="width: 1500px; height: 1500px;">-->
+	<div class="container">
+		<form class="form-login">
+			<h2 class="form-login-heading">登&nbsp;&nbsp;&nbsp;录</h2>
+			<div class="login-wrap">
+				<div id="app">
+					<input type="text" class="form-control" placeholder="用户名" v-model.trim="userName"
+						   @change="checkUserName">
+					<span class="err">{{msgUserName}}</span>
+					<br><br>
+					<input type="password" class="form-control" placeholder="密码" v-model.trim="password"
+						   @change="checkPassword">
+					<span class="err">{{msgPassword}}</span>
+					<label class="checkbox">
+							<span class="pull-right">
+								<a href="page/register.html"> 注&nbsp;&nbsp;&nbsp;册</a>
+							</span>
+					</label>
+					<button class="btn btn-theme btn-block" type="button" @click="login">
+						<i class="fa fa-lock"></i> &nbsp;&nbsp;登&nbsp;&nbsp;录
+					</button>
+
+				</div>
+			</div>
+
+
+		</form>
+
+	</div>
+	<!--</div>-->
+
+</div>
+<script src="js/vue.min.js"></script>
+<script src="js/vue-resource.js"></script>
+<!--<script src="js/vue-router.js"></script>-->
+<script language="JavaScript">
+
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			localhostPath: "",
+			userName: "",
+			password: '',
+			msgUserName: '',
+			msgPassword: ''
+		},
+		created() {
+			// created 生命周期函数
+			this.getPath();
+		},
+		methods: {
+			login() {
+
+				let b1 = this.checkUserName();
+				let b2 = this.checkPassword();
+
+				if (b1 && b2) {
+					this.$http.get(this.localhostPath + '/user/login?userName=' + this.userName + '&password=' + this.password).then(
+						result => {
+							if (result.body.state === true) {
+								window.location.href = this.localhostPath + "/page/main.html";
+
+							} else {
+								alert("登录失败\n请检查用户名、密码是否输入正确！");
+							}
+						});
+				}
+
+			},
+			getPath() {
+				let path = window.location.href;
+				let pathName = window.document.location.pathname;
+				let pos = path.indexOf(pathName);
+				this.localhostPath = path.substring(0, pos);
+				this.localhostPath = this.localhostPath + "/Network_Maintenance_System";
+			},
+			checkUserName: function () {
+				if (this.userName === null || this.userName.trim().length === 0 || this.userName === undefined) {
+					this.msgUserName = "用户名不能为空";
+					return false;
+				} else {
+					this.msgUserName = "";
+					return true;
+				}
+			},
+			checkPassword: function () {
+
+				if (this.password === null || this.password.trim().length === 0 || this.password === undefined) {
+					this.msgPassword = "密码不能为空";
+					return false;
+				} else if (this.password.trim().length < 3) {
+					this.msgPassword = "密码不能少于3位";
+					return false;
+				} else {
+					this.msgPassword = "";
+					return true;
+				}
+
+
+			},
+		}
+
+	});
+</script>
+
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+
+<!--BACKSTRETCH-->
+<!-- You can use an image of whatever size. This script will stretch to fit in any screen size.-->
+<script type="text/javascript" src="assets/js/jquery.backstretch.min.js"></script>
+<script>
+	$.backstretch("assets/img/login-bg.jpg", {speed: 500});
+</script>
+
+
+</body>
+</html>

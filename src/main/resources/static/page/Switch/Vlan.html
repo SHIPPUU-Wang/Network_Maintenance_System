@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Vlan配置</title>
+
+
+	<!-- Bootstrap core CSS -->
+	<!--顶部CSS-->
+	<link href="../../assets/css/bootstrap.css" rel="stylesheet">
+	<!--external css-->
+	<link href="../../assets/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+	<!--<link rel="stylesheet" type="text/css" href="assets/css/zabuto_calendar.css">-->
+	<!--右上角提示框-->
+	<link rel="stylesheet" type="text/css" href="../../assets/js/gritter/css/jquery.gritter.css"/>
+
+	<!--<link rel="stylesheet" type="text/css" href="assets/lineicons/style.css">-->
+
+	<!-- Custom styles for this template -->
+	<!--整体CSS-->
+	<link href="../../assets/css/style.css" rel="stylesheet">
+
+	<!--<link href="assets/css/style-responsive.css" rel="stylesheet">-->
+
+	<!--<script src="assets/js/chart-master/Chart.js"></script>-->
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>-->
+	<!--<script src="../https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
+	<!--<script src="../https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>-->
+	<!--<![endif]-->
+
+	<style type="text/css">
+		.form-group {
+			width: 745px;
+		}
+
+		.col-sm-10 {
+			margin-left: 180px;
+			width: 300px;
+		}
+
+		/* 连接设备信息CSS */
+		.notify-row {
+			font-size: 18px;
+			color: black;
+		}
+
+		.err {
+			/*margin-left: 50px;*/
+			font-size: 15px;
+			color: red;
+		}
+	</style>
+</head>
+
+<body>
+<div id="app">
+	<section id="container">
+		<!--header start-->
+		<header class="header black-bg">
+			<!--列表隐藏图标-->
+			<div class="sidebar-toggle-box">
+				<div class="fa fa-bars tooltips" data-placement="right" data-original-title="隐藏列表"></div>
+			</div>
+			<!--logo start-->
+			<a :href="localhostPath+'/page/main.html'" class="logo"><b>网络维护系统</b></a>
+			<!--logo end-->
+			<div class="notify-row">
+				<span v-text="host"></span>
+			</div>
+
+			<div class="top-menu">
+				<ul class="nav pull-right top-menu">
+					<li><a class="logout" :href="localhostPath+'/page/lock_screen.html'" style="color:#000;">锁定</a></li>
+					<li><a class="logout" href="javascript:" @click="logout" style="color:#000;">退出</a></li>
+				</ul>
+			</div>
+		</header>
+		<!--header end-->
+
+		<!--sidebar start-->
+		<!-- 列表 -->
+		<aside>
+			<div id="sidebar" class="nav-collapse" style="overflow: auto;">
+				<!-- sidebar menu start-->
+
+				<ul class="sidebar-menu" id="nav-accordion">
+					<p class="centered"><a href="#"><img src="../../assets/img/ui-sam.jpg" class="img-circle"
+														 width="60"></a></p>
+					<h5 class="centered" v-text="userName"></h5>
+
+					<div v-for="item in menu">
+
+						<li :class="mt==item.title.menuId ? 'mt' : 'sub-menu'">
+							<a :href="item.title.menuId == '1' ? localhostPath + item.title.menuURL : item.title.menuURL"
+							   :class="a1==item.title.menuId ? 'active' : ''">
+								<i :class="item.title.menuCSS"></i>
+								<span v-text="item.title.menuName"></span>
+							</a>
+
+							<ul class="sub" v-for="a in item.other" :key="a.menuId">
+								<li :class="a2==a.menuId ? 'active' : ''">
+									<a :href="localhostPath+a.menuURL" v-text="a.menuName"></a>
+								</li>
+							</ul>
+						</li>
+					</div>
+
+				</ul>
+				<!-- sidebar menu end-->
+			</div>
+		</aside>
+		<!--sidebar end-->
+
+
+		<section id="main-content">
+			<section class="wrapper">
+				<h3><i class="fa fa-angle-right"></i> Vlan配置</h3>
+				<div class="row mt">
+					<div class="col-lg-12">
+						<!-- 创建Vlan -->
+						<div class="form-panel" style="font-size: 18px; width: 750px; margin: auto">
+							<h4 class="mb"><i class="fa fa-angle-right"></i> 创建Vlan</h4>
+							<form class="form-horizontal style-form">
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">Vlan编号</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="vlan1" @change="checkVlan1"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgVlan1"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">Vlan名称</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="vlanName" class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-lg-2 col-sm-2 control-label"></label>
+									<div class="col-sm-10">
+										<!--<input type="submit" class="form-control round-form">-->
+										<button type="button" class="btn btn-theme" @click="createVlan"
+												style="color: black; margin-left: 75px;">确认配置
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+
+
+
+						<!-- 对Vlan配置IP地址 -->
+						<div class="form-panel" style="font-size: 18px; width: 750px; margin: 20px auto">
+							<h4 class="mb"><i class="fa fa-angle-right"></i> 对Vlan配置IP地址</h4>
+							<form class="form-horizontal style-form">
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">Vlan编号</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="vlan2" @change="checkVlan2"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgVlan2"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label" style="width: 160px;">IP地址</label>
+									<div class="col-sm-10" style="margin-left: 143px">
+										<input type="text" v-model.trim="ipAddress" @change="checkIpAddress"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgIpAddress"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">子网掩码</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="subnetMask" @change="checkSubnetMask"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgSubnetMask"></span>
+								</div>
+
+								<div class="form-group">
+									<label class="col-lg-2 col-sm-2 control-label"></label>
+									<div class="col-sm-10">
+										<!--<input type="submit" class="form-control round-form">-->
+										<button type="button" class="btn btn-theme" @click="vlanIP"
+												style="color: black; margin-left: 75px;">确认配置
+										</button>
+									</div>
+								</div>
+
+							</form>
+						</div>
+					</div><!-- col-lg-12-->
+				</div><!-- /row -->
+
+			</section>
+		</section>
+
+		<!--main content end-->
+		<!--footer start-->
+		<footer class="site-footer" style="background: coral">
+			<div class="text-center" style="font-size: 15px; margin-left: 160px">
+				16&nbsp;软件工程1班 &nbsp;&nbsp;&nbsp;&nbsp;<a href="../main.html" style="color: white">王彦清&nbsp;&nbsp;设计</a>
+				<a href="Vlan.html#" class="go-top">
+					<i class="fa fa-angle-up"></i>
+				</a>
+			</div>
+		</footer>
+		<!--footer end-->
+
+	</section>
+</div>
+<script src="../../js/vue.min.js"></script>
+<script src="../../js/vue-resource.js"></script>
+<script language="JavaScript">
+
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			menu: [
+				{
+					other: [],
+					title: {
+						menuId: null,
+						menuName: "",
+						menuURL: ""
+					}
+				},
+			],
+			userId: "",
+			userName: "",
+			host: "",
+
+			vlan1: "",
+			vlanName: "",
+
+			vlan2: "",
+			ipAddress: "",
+			subnetMask: "",
+
+			msgVlan1: "",
+
+			msgVlan2: "",
+			msgIpAddress: "",
+			msgSubnetMask: "",
+
+
+
+			localhostPath: "",
+			mt: "1",
+			a1: "4",
+			a2: "4.2"
+
+		},
+		created() {
+			// created 生命周期函数
+			this.getPath();
+			this.getLoginUser();
+			this.getMenu();
+			this.getHost();
+		},
+		methods: {
+			// 获取访问根地址
+			getPath() {
+				let path = window.location.href;
+				let pathName = window.document.location.pathname;
+				let pos = path.indexOf(pathName);
+				this.localhostPath = path.substring(0, pos);
+				this.localhostPath = this.localhostPath + "/Network_Maintenance_System";
+			},
+			// 获取菜单
+			getMenu() {
+				this.$http.get(this.localhostPath + "/menu").then(result => {
+					this.menu = result.body.menu;
+				});
+			},
+			// 获取当前登录用户信息
+			getLoginUser() {
+				this.$http.get(this.localhostPath + "/user/getUserInformation").then(result => {
+					if (result.body.state === true) {
+						this.userName = result.body.userName;
+						this.userId = result.body.userId;
+					} else {
+						alert("对不起！您尚未登录！");
+						window.location.href = "../../index.html";
+					}
+				})
+			},
+			// 用户登录退出
+			logout() {
+				this.$http.get(this.localhostPath + "/user/logout").then(result => {
+					window.location.href = "../../index.html";
+				})
+			},
+			// 获取Telnet连接信息
+			getHost() {
+				this.$http.get(this.localhostPath + "/telnet/getHost").then(result => {
+					if (result.body.state === true) {
+						if (result.body.host.identifier === 1) {
+							this.host = "连接设备：  路由器 "
+						} else if (result.body.host.identifier === 2) {
+							this.host = "连接设备：  交换机 "
+						}
+						this.host = this.host + result.body.host.hostAddress + " : " + result.body.host.port;
+					} else {
+						if (result.body.errNum === 1) {
+							alert("登录超时！");
+							window.location.href = "../../index.html";
+						} else {
+							this.host = "连接设备：  未连接！";
+						}
+					}
+				})
+			},
+
+
+			// 创建Vlan
+			createVlan() {
+				let b1 = this.checkVlan1();
+
+				if (b1) {
+					this.$http.post(this.localhostPath + "/switch/createVlan", {
+
+						vlan: this.vlan1,
+						vlanName: this.vlanName
+
+					}, {emulateJSON: true}).then(
+						result => {
+							if (result.body.state === true) {
+								alert("创建Vlan 配置成功");
+								window.location.href = this.localhostPath + "/page/Switch/Vlan.html";
+							} else {
+								if (result.body.errNum === 1) {
+									alert("登录超时！");
+									window.location.href = "../../index.html";
+								} else if (result.body.errNum === 2) {
+									alert("Telnet 未连接！");
+									window.location.href = "../main.html";
+								} else if (result.body.errNum === 3) {
+									alert("当前连接设备为路由器，无法操作！");
+									window.location.href = "../main.html";
+								} else {
+									alert("创建Vlan 配置失败");
+									window.location.href = this.localhostPath + "/page/Switch/Vlan.html";
+								}
+							}
+						}
+					);
+				}
+			},
+
+			// 对Vlan配置IP地址
+			vlanIP() {
+
+				let b1 = this.checkVlan2();
+				let b2 = this.checkIpAddress();
+				let b3 = this.checkSubnetMask();
+
+
+				if (b1 && b2 && b3) {
+					this.$http.post(this.localhostPath + "/switch/vlanIP", {
+						vlan: this.vlan2,
+						ipAddress: this.ipAddress,
+						subnetMask: this.subnetMask
+					}, {emulateJSON: true}).then(
+						result => {
+							if (result.body.state === true) {
+								alert("IP地址 配置成功");
+								window.location.href = this.localhostPath + "/page/Switch/Vlan.html";
+							} else {
+								if (result.body.errNum === 1) {
+									alert("登录超时！");
+									window.location.href = "../../index.html";
+								} else if (result.body.errNum === 2) {
+									alert("Telnet 未连接！");
+									window.location.href = "../main.html";
+								} else if (result.body.errNum === 3) {
+									alert("当前连接设备为路由器，无法操作！");
+									window.location.href = "../main.html";
+								} else {
+									alert("IP地址 配置失败");
+									window.location.href = this.localhostPath + "/page/Switch/Vlan.html";
+								}
+							}
+						}
+					);
+				}
+			},
+
+
+			// 检查 Vlan编号1
+			checkVlan1: function () {
+				let intTest = /^[0-9]*[1-9][0-9]*$/;
+
+				if (this.vlan1 === null || this.vlan1.trim().length === 0 || this.vlan1 === undefined) {
+					this.msgVlan1 = "Vlan编号不能为空";
+					return false;
+				} else if (!intTest.test(this.vlan1)) {
+					this.msgVlan1 = "请输入正确的Vlan编号";
+					return false;
+				} else if (this.vlan1 < 2 || this.vlan1 > 1001) {
+					this.msgVlan1 = "请输入正确的Vlan编号";
+					return false;
+				} else {
+					this.msgVlan1 = "";
+					return true;
+				}
+			},
+
+			// 检查 Vlan编号2
+			checkVlan2: function () {
+				let intTest = /^[0-9]*[1-9][0-9]*$/;
+
+				if (this.vlan2 === null || this.vlan2.trim().length === 0 || this.vlan2 === undefined) {
+					this.msgVlan2 = "Vlan编号不能为空";
+					return false;
+				} else if (!intTest.test(this.vlan2)) {
+					this.msgVlan2 = "请输入正确的Vlan编号";
+					return false;
+				} else if (this.vlan2 < 1 || this.vlan2 > 1001) {
+					this.msgVlan2 = "请输入正确的Vlan编号";
+					return false;
+				} else {
+					this.msgVlan2 = "";
+					return true;
+				}
+			},
+
+
+
+			// 检查IP地址
+			checkIpAddress: function () {
+				let ipTest = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+
+				if (this.ipAddress === null || this.ipAddress.trim().length === 0 || this.ipAddress === undefined) {
+					this.msgIpAddress = "IP地址不能为空";
+					return false;
+				} else if (!ipTest.test(this.ipAddress)) {
+					this.msgIpAddress = "请输入正确的IP地址";
+					return false;
+				} else {
+					this.msgIpAddress = "";
+					return true;
+				}
+
+			},
+			// 检查 子网掩码
+			checkSubnetMask: function () {
+				let maskTest = /^(254|252|248|240|224|192|128|0)\.0\.0\.0$|^(255\.(254|252|248|240|224|192|128|0)\.0\.0)$|^(255\.255\.(254|252|248|240|224|192|128|0)\.0)$|^(255\.255\.255\.(254|252|248|240|224|192|128|0))$/;
+
+				if (this.subnetMask === null || this.subnetMask.trim().length === 0 || this.subnetMask === undefined) {
+					this.msgSubnetMask = "子网掩码不能为空";
+					return false;
+				} else if (!maskTest.test(this.subnetMask)) {
+					this.msgSubnetMask = "请输入正确的子网掩码";
+					return false;
+				} else {
+					this.msgSubnetMask = "";
+					return true;
+				}
+			}
+		}
+	});
+
+
+</script>
+
+
+<!-- js placed at the end of the document so the pages load faster -->
+<!--<script src="assets/js/jquery.js"></script>-->
+
+
+<script src="../../assets/js/jquery-1.8.3.min.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="../../assets/js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="../../assets/js/jquery.scrollTo.min.js"></script>
+
+
+<!--<script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>-->
+<!--<script src="assets/js/jquery.sparkline.js"></script>-->
+
+
+<!--common script for all pages-->
+<script src="../../assets/js/common-scripts.js"></script>
+
+<!-- 右上角提示框-->
+<!--<script type="text/javascript" src="assets/js/gritter/js/jquery.gritter.js"></script>-->
+
+<!--<script type="text/javascript" src="assets/js/gritter-conf.js"></script>-->
+
+<!--script for this page-->
+<!--<script src="assets/js/sparkline-chart.js"></script>-->
+<!--<script src="assets/js/zabuto_calendar.js"></script>-->
+
+<!-- 开关按钮 -->
+<script src="../../assets/js/bootstrap-switch.js"></script>
+<script src="../../assets/js/form-component.js"></script>
+<script src="../../assets/js/jquery.tagsinput.js"></script>
+
+
+</body>
+</html>

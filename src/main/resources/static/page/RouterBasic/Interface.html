@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>接口配置</title>
+
+	<!-- Bootstrap core CSS -->
+	<!--顶部CSS-->
+	<link href="../../assets/css/bootstrap.css" rel="stylesheet">
+	<!--external css-->
+	<link href="../../assets/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+	<!--<link rel="stylesheet" type="text/css" href="assets/css/zabuto_calendar.css">-->
+	<!--右上角提示框-->
+	<link rel="stylesheet" type="text/css" href="../../assets/js/gritter/css/jquery.gritter.css"/>
+
+	<!--<link rel="stylesheet" type="text/css" href="assets/lineicons/style.css">-->
+
+	<!-- Custom styles for this template -->
+	<!--整体CSS-->
+	<link href="../../assets/css/style.css" rel="stylesheet">
+
+	<!--<link href="assets/css/style-responsive.css" rel="stylesheet">-->
+
+	<!--<script src="assets/js/chart-master/Chart.js"></script>-->
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>-->
+	<!--<script src="../https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
+	<!--<script src="../https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>-->
+	<!--<![endif]-->
+
+	<style type="text/css">
+		.form-group {
+			width: 745px;
+		}
+
+		.col-sm-10 {
+			margin-left: 180px;
+			width: 300px;
+		}
+
+		/* 连接设备信息CSS */
+		.notify-row {
+			font-size: 18px;
+			color: black;
+		}
+
+		.err {
+			/*margin-left: 50px;*/
+			font-size: 15px;
+			color: red;
+		}
+	</style>
+</head>
+
+<body>
+<div id="app">
+	<section id="container">
+		<!--header start-->
+		<header class="header black-bg">
+			<!--列表隐藏图标-->
+			<div class="sidebar-toggle-box">
+				<div class="fa fa-bars tooltips" data-placement="right" data-original-title="隐藏列表"></div>
+			</div>
+			<!--logo start-->
+			<a :href="localhostPath+'/page/main.html'" class="logo"><b>网络维护系统</b></a>
+			<!--logo end-->
+			<div class="notify-row">
+				<span v-text="host"></span>
+			</div>
+
+			<div class="top-menu">
+				<ul class="nav pull-right top-menu">
+					<li><a class="logout" :href="localhostPath+'/page/lock_screen.html'" style="color:#000;">锁定</a></li>
+					<li><a class="logout" href="javascript:" @click="logout" style="color:#000;">退出</a></li>
+				</ul>
+			</div>
+		</header>
+		<!--header end-->
+
+		<!--sidebar start-->
+		<!-- 列表 -->
+		<aside>
+			<div id="sidebar" class="nav-collapse" style="overflow: auto;">
+				<!-- sidebar menu start-->
+
+				<ul class="sidebar-menu" id="nav-accordion">
+					<p class="centered"><a href="#"><img src="../../assets/img/ui-sam.jpg" class="img-circle"
+														 width="60"></a></p>
+					<h5 class="centered" v-text="userName"></h5>
+
+					<div v-for="item in menu">
+
+						<li :class="mt==item.title.menuId ? 'mt' : 'sub-menu'">
+							<a :href="item.title.menuId == '1' ? localhostPath + item.title.menuURL : item.title.menuURL"
+							   :class="a1==item.title.menuId ? 'active' : ''">
+								<i :class="item.title.menuCSS"></i>
+								<span v-text="item.title.menuName"></span>
+							</a>
+
+							<ul class="sub" v-for="a in item.other" :key="a.menuId">
+								<li :class="a2==a.menuId ? 'active' : ''">
+									<a :href="localhostPath+a.menuURL" v-text="a.menuName"></a>
+								</li>
+							</ul>
+						</li>
+					</div>
+
+				</ul>
+				<!-- sidebar menu end-->
+			</div>
+		</aside>
+		<!--sidebar end-->
+
+
+		<section id="main-content">
+			<section class="wrapper">
+				<h3><i class="fa fa-angle-right"></i> 接口配置</h3>
+				<div class="row mt">
+					<div class="col-lg-12">
+						<!-- IPv4 -->
+						<div class="form-panel" style="font-size: 18px; width: 750px; margin: auto">
+							<h4 class="mb"><i class="fa fa-angle-right"></i> IPv4</h4>
+							<form class="form-horizontal style-form">
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">选择接口</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="interface_v4" @change="checkInterface_v4"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgInterface_v4"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">IPv4地址</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="ipAddress_v4" @change="checkIpAddress_v4"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgIpAddress_v4"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">子网掩码</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="subnetMask_v4" @change="checkSubnetMask_v4"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgSubnetMask_v4"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label" style="width: 200px;">是否打开接口</label>
+									<!--<div class="col-sm-10">
+										<input type="checkbox" v-model="openInterface_v4"  data-toggle="switch"/>
+									</div>-->
+									<div class="switch" @click="checkbox_v4" style="margin-left: 195px">
+										<input type="checkbox" checked=""/>
+									</div>
+
+								</div>
+								<div class="form-group">
+									<label class="col-lg-2 col-sm-2 control-label"></label>
+									<div class="col-sm-10">
+										<!--<input type="submit" class="form-control round-form">-->
+										<button type="button" class="btn btn-theme" @click="interfaceIPv4"
+												style="color: black; margin-left: 75px;">确认配置
+										</button>
+									</div>
+								</div>
+
+							</form>
+						</div>
+
+
+						<!-- IPv6 -->
+						<div class="form-panel" style="font-size: 18px; width: 750px; margin: 20px auto">
+							<h4 class="mb"><i class="fa fa-angle-right"></i> IPv6</h4>
+							<form class="form-horizontal style-form">
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">选择接口</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="interface_v6" @change="checkInterface_v6"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgInterface_v6"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">IPv6地址</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="ipAddress_v6" @change="checkIpAddress_v6"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgIpAddress_v6"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">子网掩码</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="subnetMask_v6" @change="checkSubnetMask_v6"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgSubnetMask_v6"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label" style="width: 200px;">是否打开接口</label>
+									<div class="switch" @click="checkbox_v6" style="margin-left: 195px">
+										<input type="checkbox" checked=""/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-lg-2 col-sm-2 control-label"></label>
+									<div class="col-sm-10">
+										<!--<input type="submit" class="form-control round-form">-->
+										<button type="button" class="btn btn-theme" @click="interfaceIPv6"
+												style="color: black; margin-left: 75px;">确认配置
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div><!-- col-lg-12-->
+				</div><!-- /row -->
+
+			</section>
+		</section>
+
+		<!--main content end-->
+		<!--footer start-->
+		<footer class="site-footer" style="background: coral">
+			<div class="text-center" style="font-size: 15px; margin-left: 160px">
+				16&nbsp;软件工程1班 &nbsp;&nbsp;&nbsp;&nbsp;<a href="../main.html" style="color: white">王彦清&nbsp;&nbsp;设计</a>
+				<a href="./Interface.html#" class="go-top">
+					<i class="fa fa-angle-up"></i>
+				</a>
+			</div>
+		</footer>
+		<!--footer end-->
+
+	</section>
+</div>
+<script src="../../js/vue.min.js"></script>
+<script src="../../js/vue-resource.js"></script>
+<script language="JavaScript">
+
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			menu: [
+				{
+					other: [],
+					title: {
+						menuId: null,
+						menuName: "",
+						menuURL: ""
+					}
+				},
+			],
+			userId: "",
+			userName: "",
+			host: "",
+
+			interface_v4: "",
+			ipAddress_v4: "",
+			subnetMask_v4: "",
+			// 接口默认开启
+			openInterface_v4: true,
+			i_v4: 1,
+
+			interface_v6: "",
+			ipAddress_v6: "",
+			subnetMask_v6: "",
+			openInterface_v6: true,
+			i_v6: 1,
+
+			msgInterface_v4: "",
+			msgIpAddress_v4: "",
+			msgSubnetMask_v4: "",
+			msgInterface_v6: "",
+			msgIpAddress_v6: "",
+			msgSubnetMask_v6: "",
+
+			localhostPath: "",
+			mt: "1",
+			a1: "2",
+			a2: "2.1"
+
+		},
+		created() {
+			// created 生命周期函数
+			this.getPath();
+			this.getLoginUser();
+			this.getMenu();
+			this.getHost();
+		},
+		methods: {
+			// 获取访问根地址
+			getPath() {
+				let path = window.location.href;
+				let pathName = window.document.location.pathname;
+				let pos = path.indexOf(pathName);
+				this.localhostPath = path.substring(0, pos);
+				this.localhostPath = this.localhostPath + "/Network_Maintenance_System";
+			},
+			// 获取菜单
+			getMenu() {
+				this.$http.get(this.localhostPath + "/menu").then(result => {
+					this.menu = result.body.menu;
+				});
+			},
+			// 获取当前登录用户信息
+			getLoginUser() {
+				this.$http.get(this.localhostPath + "/user/getUserInformation").then(result => {
+					if (result.body.state === true) {
+						this.userName = result.body.userName;
+						this.userId = result.body.userId;
+					} else {
+						alert("对不起！您尚未登录！");
+						window.location.href = "../../index.html";
+					}
+				})
+			},
+			// 用户登录退出
+			logout() {
+				this.$http.get(this.localhostPath + "/user/logout").then(result => {
+					window.location.href = "../../index.html";
+				})
+			},
+			// 获取Telnet连接信息
+			getHost() {
+				this.$http.get(this.localhostPath + "/telnet/getHost").then(result => {
+					if (result.body.state === true) {
+						if (result.body.host.identifier === 1) {
+							this.host = "连接设备：  路由器 "
+						} else if (result.body.host.identifier === 2) {
+							this.host = "连接设备：  交换机 "
+						}
+						this.host = this.host + result.body.host.hostAddress + " : " + result.body.host.port;
+					} else {
+						if (result.body.errNum === 1) {
+							alert("登录超时！");
+							window.location.href = "../../index.html";
+						} else {
+							this.host = "连接设备：  未连接！";
+						}
+					}
+				})
+			},
+
+
+			// 接口配置 IPv4
+			interfaceIPv4() {
+				let b1 = this.checkInterface_v4();
+				let b2 = this.checkIpAddress_v4();
+				let b3 = this.checkSubnetMask_v4();
+
+				if (b1 && b2 && b3) {
+					this.$http.post(this.localhostPath + "/routerBasic/interface", {
+						inte: this.interface_v4,
+						ipAddress: this.ipAddress_v4,
+						subnetMask: this.subnetMask_v4,
+						openInterface: this.openInterface_v4,
+						ipVersion: 4
+					}, {emulateJSON: true}).then(
+						result => {
+							if (result.body.state === true) {
+
+								alert(this.interface_v4 + " 接口配置成功");
+								window.location.href = this.localhostPath + "/page/RouterBasic/Interface.html";
+							} else {
+								if (result.body.errNum === 1) {
+									alert("登录超时！");
+									window.location.href = "../../index.html";
+								} else if (result.body.errNum === 2) {
+									alert("Telnet 未连接！");
+									window.location.href = "../main.html";
+								} else if (result.body.errNum === 3) {
+									alert("当前连接设备为交换机，无法操作！");
+									window.location.href = "../main.html";
+								} else {
+									alert(this.interface_v4 + " 接口配置失败");
+									window.location.href = this.localhostPath + "/page/RouterBasic/Interface.html";
+								}
+							}
+						}
+					);
+				}
+			},
+			// 接口配置 IPv6
+			interfaceIPv6() {
+				let b1 = this.checkInterface_v6();
+				let b2 = this.checkIpAddress_v6();
+				let b3 = this.checkSubnetMask_v6();
+
+				if (b1 && b2 && b3) {
+					this.$http.post(this.localhostPath + "/routerBasic/interface", {
+						inte: this.interface_v6,
+						ipAddress: this.ipAddress_v6,
+						subnetMask: this.subnetMask_v6,
+						openInterface: this.openInterface_v6,
+						ipVersion: 6
+					}, {emulateJSON: true}).then(
+						result => {
+							if (result.body.state === true) {
+
+								alert(this.interface_v6 + " 接口配置成功");
+								window.location.href = this.localhostPath + "/page/RouterBasic/Interface.html";
+							} else {
+								if (result.body.errNum === 1) {
+									alert("登录超时！");
+									window.location.href = "../../index.html";
+								} else if (result.body.errNum === 2) {
+									alert("Telnet 未连接！");
+									window.location.href = "../main.html";
+								} else if (result.body.errNum === 3) {
+									alert("当前连接设备为交换机，无法操作！");
+									window.location.href = "../main.html";
+								} else {
+									alert(this.interface_v4 + " 接口配置失败");
+									window.location.href = this.localhostPath + "/page/RouterBasic/Interface.html";
+								}
+							}
+						}
+					);
+				}
+			},
+			// 判断 openInterface_v4
+			checkbox_v4: function () {
+				if (this.i_v4 % 2 === 0) {
+					this.openInterface_v4 = true;
+				} else {
+					this.openInterface_v4 = false;
+				}
+				this.i_v4++;
+			},
+			// 判断 openInterface_v6
+			checkbox_v6: function () {
+				if (this.i_v6 % 2 === 0) {
+					this.openInterface_v6 = true;
+				} else {
+					this.openInterface_v6 = false;
+				}
+				this.i_v6++;
+			},
+			// 检查 接口 v4
+			checkInterface_v4: function () {
+				if (this.interface_v4 === null || this.interface_v4.trim().length === 0 || this.interface_v4 === undefined) {
+					this.msgInterface_v4 = "接口号不能为空";
+					return false;
+				} else {
+					this.msgInterface_v4 = "";
+					return true;
+				}
+			},
+			// 检查IPv4地址
+			checkIpAddress_v4: function () {
+				let ipTest = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+				if (this.ipAddress_v4.trim().length > 0) {
+					if (!ipTest.test(this.ipAddress_v4)) {
+						this.msgIpAddress_v4 = "请输入正确的IP地址";
+						return false;
+					} else {
+						this.msgIpAddress_v4 = "";
+						return true;
+					}
+				} else {
+					this.msgIpAddress_v4 = "";
+					return true;
+				}
+			},
+			// 检查子网掩码 v4
+			checkSubnetMask_v4: function () {
+				let maskTest = /^(254|252|248|240|224|192|128|0)\.0\.0\.0$|^(255\.(254|252|248|240|224|192|128|0)\.0\.0)$|^(255\.255\.(254|252|248|240|224|192|128|0)\.0)$|^(255\.255\.255\.(254|252|248|240|224|192|128|0))$/ ;
+				if (this.ipAddress_v4.trim().length > 0) {
+					if (this.subnetMask_v4 === null || this.subnetMask_v4.trim().length === 0) {
+						this.msgSubnetMask_v4 = "子网掩码不能为空";
+						return false;
+					} else if (!maskTest.test(this.subnetMask_v4)) {
+						this.msgSubnetMask_v4 = "请输入正确的子网掩码";
+						return false;
+					} else {
+						this.msgSubnetMask_v4 = "";
+						return true;
+					}
+				} else {
+					this.msgSubnetMask_v4 = "";
+					return true;
+				}
+			},
+			// 检查 接口 v6
+			checkInterface_v6: function () {
+				if (this.interface_v6 === null || this.interface_v6.trim().length === 0 || this.interface_v6 === undefined) {
+					this.msgInterface_v6 = "接口号不能为空";
+					return false;
+				} else {
+					this.msgInterface_v6 = "";
+					return true;
+				}
+			},
+			// 检查IPv6地址
+			checkIpAddress_v6: function () {
+				let ipv6Test = /^([\da-fA-F]{1,4}:){6}((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$|^::([\da-fA-F]{1,4}:){0,4}((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$|^([\da-fA-F]{1,4}:):([\da-fA-F]{1,4}:){0,3}((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$|^([\da-fA-F]{1,4}:){2}:([\da-fA-F]{1,4}:){0,2}((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$|^([\da-fA-F]{1,4}:){3}:([\da-fA-F]{1,4}:){0,1}((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$|^([\da-fA-F]{1,4}:){4}:((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$|^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$|^:((:[\da-fA-F]{1,4}){1,6}|:)$|^[\da-fA-F]{1,4}:((:[\da-fA-F]{1,4}){1,5}|:)$|^([\da-fA-F]{1,4}:){2}((:[\da-fA-F]{1,4}){1,4}|:)$|^([\da-fA-F]{1,4}:){3}((:[\da-fA-F]{1,4}){1,3}|:)$|^([\da-fA-F]{1,4}:){4}((:[\da-fA-F]{1,4}){1,2}|:)$|^([\da-fA-F]{1,4}:){5}:([\da-fA-F]{1,4})?$|^([\da-fA-F]{1,4}:){6}:$/;
+				if (this.ipAddress_v6.trim().length > 0) {
+					if (!ipv6Test.test(this.ipAddress_v6)) {
+						this.msgIpAddress_v6 = "请输入正确的IPv6地址";
+						return false;
+					} else {
+						this.msgIpAddress_v6 = "";
+						return true;
+					}
+				} else {
+					this.msgIpAddress_v6 = "";
+					return true;
+				}
+			},
+			// 检查子网掩码 v6
+			checkSubnetMask_v6: function () {
+				let intTest = /^[0-9]*[1-9][0-9]*$/;
+				if (this.ipAddress_v6.trim().length > 0) {
+					if (this.subnetMask_v6 === null || this.subnetMask_v6.trim().length === 0) {
+						this.msgSubnetMask_v6 = "子网掩码不能为空";
+						return false;
+					} else if (!intTest.test(this.subnetMask_v6)) {
+						this.msgSubnetMask_v6 = "请输入正确的子网掩码";
+						return false;
+					} else {
+						this.msgSubnetMask_v6 = "";
+						return true;
+					}
+				} else {
+					this.msgSubnetMask_v6 = "";
+					return true;
+				}
+			}
+		}
+
+	});
+
+
+</script>
+
+
+<!-- js placed at the end of the document so the pages load faster -->
+<!--<script src="assets/js/jquery.js"></script>-->
+
+
+<script src="../../assets/js/jquery-1.8.3.min.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="../../assets/js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="../../assets/js/jquery.scrollTo.min.js"></script>
+
+
+<!--<script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>-->
+<!--<script src="assets/js/jquery.sparkline.js"></script>-->
+
+
+<!--common script for all pages-->
+<script src="../../assets/js/common-scripts.js"></script>
+
+<!-- 右上角提示框-->
+<!--<script type="text/javascript" src="assets/js/gritter/js/jquery.gritter.js"></script>-->
+
+<!--<script type="text/javascript" src="assets/js/gritter-conf.js"></script>-->
+
+<!--script for this page-->
+<!--<script src="assets/js/sparkline-chart.js"></script>-->
+<!--<script src="assets/js/zabuto_calendar.js"></script>-->
+
+<!-- 开关按钮 -->
+<script src="../../assets/js/bootstrap-switch.js"></script>
+<script src="../../assets/js/form-component.js"></script>
+<script src="../../assets/js/jquery.tagsinput.js"></script>
+
+
+</body>
+</html>

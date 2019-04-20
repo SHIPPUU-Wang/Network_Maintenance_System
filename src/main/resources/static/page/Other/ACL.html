@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>访问控制列表（ACL）</title>
+
+
+	<!-- Bootstrap core CSS -->
+	<!--顶部CSS-->
+	<link href="../../assets/css/bootstrap.css" rel="stylesheet">
+	<!--external css-->
+	<link href="../../assets/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+	<!--<link rel="stylesheet" type="text/css" href="assets/css/zabuto_calendar.css">-->
+	<!--右上角提示框-->
+	<link rel="stylesheet" type="text/css" href="../../assets/js/gritter/css/jquery.gritter.css"/>
+
+	<!--<link rel="stylesheet" type="text/css" href="assets/lineicons/style.css">-->
+
+	<!-- Custom styles for this template -->
+	<!--整体CSS-->
+	<link href="../../assets/css/style.css" rel="stylesheet">
+
+	<!--<link href="assets/css/style-responsive.css" rel="stylesheet">-->
+
+	<!--<script src="assets/js/chart-master/Chart.js"></script>-->
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>-->
+	<!--<script src="../https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
+	<!--<script src="../https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>-->
+	<!--<![endif]-->
+
+	<style type="text/css">
+		.form-group {
+			width: 745px;
+		}
+
+		.col-sm-10 {
+			margin-left: 180px;
+			width: 300px;
+		}
+
+		/* 连接设备信息CSS */
+		.notify-row {
+			font-size: 18px;
+			color: black;
+		}
+
+		.err {
+			/*margin-left: 50px;*/
+			font-size: 15px;
+			color: red;
+		}
+	</style>
+</head>
+
+<body>
+<div id="app">
+	<section id="container">
+		<!--header start-->
+		<header class="header black-bg">
+			<!--列表隐藏图标-->
+			<div class="sidebar-toggle-box">
+				<div class="fa fa-bars tooltips" data-placement="right" data-original-title="隐藏列表"></div>
+			</div>
+			<!--logo start-->
+			<a :href="localhostPath+'/page/main.html'" class="logo"><b>网络维护系统</b></a>
+			<!--logo end-->
+			<div class="notify-row">
+				<span v-text="host"></span>
+			</div>
+
+			<div class="top-menu">
+				<ul class="nav pull-right top-menu">
+					<li><a class="logout" :href="localhostPath+'/page/lock_screen.html'" style="color:#000;">锁定</a></li>
+					<li><a class="logout" href="javascript:" @click="logout" style="color:#000;">退出</a></li>
+				</ul>
+			</div>
+		</header>
+		<!--header end-->
+
+		<!--sidebar start-->
+		<!-- 列表 -->
+		<aside>
+			<div id="sidebar" class="nav-collapse" style="overflow: auto;">
+				<!-- sidebar menu start-->
+
+				<ul class="sidebar-menu" id="nav-accordion">
+					<p class="centered"><a href="#"><img src="../../assets/img/ui-sam.jpg" class="img-circle"
+														 width="60"></a></p>
+					<h5 class="centered" v-text="userName"></h5>
+
+					<div v-for="item in menu">
+
+						<li :class="mt==item.title.menuId ? 'mt' : 'sub-menu'">
+							<a :href="item.title.menuId == '1' ? localhostPath + item.title.menuURL : item.title.menuURL"
+							   :class="a1==item.title.menuId ? 'active' : ''">
+								<i :class="item.title.menuCSS"></i>
+								<span v-text="item.title.menuName"></span>
+							</a>
+
+							<ul class="sub" v-for="a in item.other" :key="a.menuId">
+								<li :class="a2==a.menuId ? 'active' : ''">
+									<a :href="localhostPath+a.menuURL" v-text="a.menuName"></a>
+								</li>
+							</ul>
+						</li>
+					</div>
+
+				</ul>
+				<!-- sidebar menu end-->
+			</div>
+		</aside>
+		<!--sidebar end-->
+
+
+		<section id="main-content">
+			<section class="wrapper">
+				<h3><i class="fa fa-angle-right"></i> 访问控制列表（ACL）</h3>
+				<div class="row mt">
+					<div class="col-lg-12">
+						<!-- 标准ACL -->
+						<div class="form-panel" style="font-size: 18px; width: 750px; margin: auto">
+							<h4 class="mb"><i class="fa fa-angle-right"></i> 标准ACL</h4>
+							<form class="form-horizontal style-form">
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">ACL编号</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="aclNum1" @change="checkAclNum1"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgAclNum1"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">控制语句</label>
+									<div class="col-sm-10" style="font-size: 18px; margin-left: 220px">
+										permit：<input v-model="controlStatement1" type="radio" value="permit"
+													  style="height: 15px; width: 15px">
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										deny：<input v-model="controlStatement1" type="radio" value="deny"
+													style="height: 15px; width: 15px">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">IP地址</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="ipAddress" @change="checkIpAddress"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgIpAddress"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label" style="width: 180px">通配符（反掩码）</label>
+									<div class="col-sm-10" style="margin-left: 125px">
+										<input type="text" v-model.trim="wildcard" @change="checkWildcard"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgWildcard"></span>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">控制接口</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="interface1" @change="checkInterface1"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgInterface1"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label" style="width: 180px">控制接口流量方向</label>
+									<div class="col-sm-10" style="font-size: 18px; margin-left: 180px">
+										in：<input v-model="direction1" type="radio" value="in"
+												  style="height: 15px; width: 15px">
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										out：<input v-model="direction1" type="radio" value="out"
+												   style="height: 15px; width: 15px">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-lg-2 col-sm-2 control-label"></label>
+									<div class="col-sm-10">
+										<!--<input type="submit" class="form-control round-form">-->
+										<button type="button" class="btn btn-theme" @click="ACL1"
+												style="color: black; margin-left: 75px;">确认配置
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+
+
+
+						<!-- 扩展ACL -->
+						<div class="form-panel" style="font-size: 18px; width: 750px; margin: 20px auto">
+							<h4 class="mb"><i class="fa fa-angle-right"></i> 扩展ACL</h4>
+							<form class="form-horizontal style-form">
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">ACL编号</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="aclNum2" @change="checkAclNum2"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgAclNum2"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">控制语句</label>
+									<div class="col-sm-10" style="font-size: 18px; margin-left: 220px">
+										permit：<input v-model="controlStatement2" type="radio" value="permit"
+													  style="height: 15px; width: 15px">
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										deny：<input v-model="controlStatement2" type="radio" value="deny"
+													style="height: 15px; width: 15px">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">指定协议</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="protocol" @change="checkProtocol"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgProtocol"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">源 IP</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="sourceIp" @change="checkSourceIp"
+											   class="form-control round-form">
+										<!--<span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>-->
+									</div>
+									<span class="err" v-text="msgSourceIp"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label" style="width: 180px">目的 IP</label>
+									<div class="col-sm-10" style="margin-left: 125px">
+										<input type="text" v-model.trim="destinationIp" @change="checkDestinationIp"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgDestinationIp"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label" style="width: 180px">服务 / 端口号</label>
+									<div class="col-sm-10" style="margin-left: 125px">
+										<input type="text" v-model.trim="service" @change="checkService"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgService"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label">控制接口</label>
+									<div class="col-sm-10">
+										<input type="text" v-model.trim="interface2" @change="checkInterface2"
+											   class="form-control round-form">
+									</div>
+									<span class="err" v-text="msgInterface2"></span>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 col-sm-2 control-label" style="width: 180px">控制接口流量方向</label>
+									<div class="col-sm-10" style="font-size: 18px; margin-left: 180px">
+										in：<input v-model="direction2" type="radio" value="in"
+												  style="height: 15px; width: 15px">
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										out：<input v-model="direction2" type="radio" value="out"
+												   style="height: 15px; width: 15px">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-lg-2 col-sm-2 control-label"></label>
+									<div class="col-sm-10">
+										<!--<input type="submit" class="form-control round-form">-->
+										<button type="button" class="btn btn-theme" @click="ACL2"
+												style="color: black; margin-left: 75px;">确认配置
+										</button>
+									</div>
+								</div>
+
+							</form>
+						</div>
+					</div><!-- col-lg-12-->
+				</div><!-- /row -->
+
+			</section>
+		</section>
+
+		<!--main content end-->
+		<!--footer start-->
+		<footer class="site-footer" style="background: coral">
+			<div class="text-center" style="font-size: 15px; margin-left: 160px">
+				16&nbsp;软件工程1班 &nbsp;&nbsp;&nbsp;&nbsp;<a href="../main.html" style="color: white">王彦清&nbsp;&nbsp;设计</a>
+				<a href="ACL.html#" class="go-top">
+					<i class="fa fa-angle-up"></i>
+				</a>
+			</div>
+		</footer>
+		<!--footer end-->
+
+	</section>
+</div>
+<script src="../../js/vue.min.js"></script>
+<script src="../../js/vue-resource.js"></script>
+<script language="JavaScript">
+
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			menu: [
+				{
+					other: [],
+					title: {
+						menuId: null,
+						menuName: "",
+						menuURL: ""
+					}
+				},
+			],
+			userId: "",
+			userName: "",
+			host: "",
+
+			// ACL编号
+			aclNum1: "",
+			// 控制语句
+			controlStatement1: "permit",
+			ipAddress: "",
+			// 通配符（反掩码）
+			wildcard: "",
+			interface1: "",
+			// 控制流量方向
+			direction1: "in",
+
+
+			aclNum2: "",
+			controlStatement2: "permit",
+			// 指定协议
+			protocol: "",
+			// 源IP
+			sourceIp: "",
+			// 目的IP
+			destinationIp: "",
+			// 服务/端口号
+			service: "",
+			interface2: "",
+			direction2: "in",
+
+			msgAclNum1: "",
+			msgIpAddress: "",
+			msgWildcard: "",
+			msgInterface1: "",
+
+
+			msgAclNum2: "",
+			msgProtocol: "",
+			msgSourceIp: "",
+			msgDestinationIp: "",
+			msgService: "",
+			msgInterface2: "",
+
+
+			localhostPath: "",
+			mt: "1",
+			a1: "5",
+			a2: "5.1"
+
+		},
+		created() {
+			// created 生命周期函数
+			this.getPath();
+			this.getLoginUser();
+			this.getMenu();
+			this.getHost();
+		},
+		methods: {
+			// 获取访问根地址
+			getPath() {
+				let path = window.location.href;
+				let pathName = window.document.location.pathname;
+				let pos = path.indexOf(pathName);
+				this.localhostPath = path.substring(0, pos);
+				this.localhostPath = this.localhostPath + "/Network_Maintenance_System";
+			},
+			// 获取菜单
+			getMenu() {
+				this.$http.get(this.localhostPath + "/menu").then(result => {
+					this.menu = result.body.menu;
+				});
+			},
+			// 获取当前登录用户信息
+			getLoginUser() {
+				this.$http.get(this.localhostPath + "/user/getUserInformation").then(result => {
+					if (result.body.state === true) {
+						this.userName = result.body.userName;
+						this.userId = result.body.userId;
+					} else {
+						alert("对不起！您尚未登录！");
+						window.location.href = "../../index.html";
+					}
+				})
+			},
+			// 用户登录退出
+			logout() {
+				this.$http.get(this.localhostPath + "/user/logout").then(result => {
+					window.location.href = "../../index.html";
+				})
+			},
+			// 获取Telnet连接信息
+			getHost() {
+				this.$http.get(this.localhostPath + "/telnet/getHost").then(result => {
+					if (result.body.state === true) {
+						if (result.body.host.identifier === 1) {
+							this.host = "连接设备：  路由器 "
+						} else if (result.body.host.identifier === 2) {
+							this.host = "连接设备：  交换机 "
+						}
+						this.host = this.host + result.body.host.hostAddress + " : " + result.body.host.port;
+					} else {
+						if (result.body.errNum === 1) {
+							alert("登录超时！");
+							window.location.href = "../../index.html";
+						} else {
+							this.host = "连接设备：  未连接！";
+						}
+					}
+				})
+			},
+
+
+			// 普通ACL配置
+			ACL1() {
+				let b1 = this.checkAclNum1();
+				let b2 = this.checkIpAddress();
+				let b3 = this.checkWildcard();
+				let b4 = this.checkInterface1();
+
+				if (b1 && b2 && b3 && b4) {
+					this.$http.post(this.localhostPath + "/other/acl1", {
+						aclNum: this.aclNum1,
+						controlStatement: this.controlStatement1,
+						ipAddress: this.ipAddress,
+						wildcard: this.wildcard,
+						inte: this.interface1,
+						direction: this.direction1
+					}, {emulateJSON: true}).then(
+						result => {
+							if (result.body.state === true) {
+								alert("普通ACL 配置成功");
+								window.location.href = this.localhostPath + "/page/Other/ACL.html";
+							} else {
+								if (result.body.errNum === 1) {
+									alert("登录超时！");
+									window.location.href = "../../index.html";
+								} else if (result.body.errNum === 2) {
+									alert("Telnet 未连接！");
+									window.location.href = "../main.html";
+								} else if (result.body.errNum === 3) {
+									alert("当前连接设备为交换机，无法操作！");
+									window.location.href = "../main.html";
+								} else {
+									alert("普通ACL 配置失败");
+									window.location.href = this.localhostPath + "/page/Other/ACL.html";
+								}
+							}
+						}
+					);
+				}
+			},
+
+			// 扩展ACL配置
+			ACL2() {
+
+				let b1 = this.checkAclNum2();
+				let b2 = this.checkProtocol();
+				let b3 = this.checkSourceIp();
+				let b4 = this.checkDestinationIp();
+				let b5 = this.checkService();
+				let b6 = this.checkInterface2();
+
+				if (b1 && b2 && b3 && b4 && b5 && b6) {
+					this.$http.post(this.localhostPath + "/other/acl2", {
+						aclNum: this.aclNum2,
+						controlStatement: this.controlStatement2,
+						protocol: this.protocol,
+						sourceIp: this.sourceIp,
+						destinationIp: this.destinationIp,
+						service: this.service,
+						inte: this.interface2,
+						direction: this.direction2
+					}, {emulateJSON: true}).then(
+						result => {
+							if (result.body.state === true) {
+								alert("扩展ACL 配置成功");
+								window.location.href = this.localhostPath + "/page/Other/ACL.html";
+							} else {
+								if (result.body.errNum === 1) {
+									alert("登录超时！");
+									window.location.href = "../../index.html";
+								} else if (result.body.errNum === 2) {
+									alert("Telnet 未连接！");
+									window.location.href = "../main.html";
+								} else if (result.body.errNum === 3) {
+									alert("当前连接设备为交换机，无法操作！");
+									window.location.href = "../main.html";
+								} else {
+									alert("扩展ACL 配置失败");
+									window.location.href = this.localhostPath + "/page/Other/ACL.html";
+								}
+							}
+						}
+					);
+				}
+			},
+
+			// 检查 普通ACL编号
+			checkAclNum1: function () {
+				let intTest = /^[0-9]*[1-9][0-9]*$/;
+
+				if (this.aclNum1 === null || this.aclNum1.trim().length === 0 || this.aclNum1 === undefined) {
+					this.msgAclNum1 = "ACL编号不能为空";
+					return false;
+				} else if (!intTest.test(this.aclNum1)) {
+					this.msgAclNum1 = "请输入正确的ACL编号";
+					return false;
+				} else if (this.aclNum1 < 1 || this.aclNum1 > 99) {
+					this.msgAclNum1 = "普通ACL编号在1-99";
+					return false;
+				} else {
+					this.msgAclNum1 = "";
+					return true;
+				}
+
+			},
+			// 检查 扩展ACL编号
+			checkAclNum2: function () {
+				let intTest = /^[0-9]*[1-9][0-9]*$/;
+
+				if (this.aclNum2 === null || this.aclNum2.trim().length === 0 || this.aclNum2 === undefined) {
+					this.msgAclNum2 = "ACL编号不能为空";
+					return false;
+				} else if (!intTest.test(this.aclNum2)) {
+					this.msgAclNum2 = "请输入正确的ACL编号";
+					return false;
+				} else if (this.aclNum2 < 100 || this.aclNum2 > 199) {
+					this.msgAclNum2 = "扩展ACL编号在100-199";
+					return false;
+				} else {
+					this.msgAclNum2 = "";
+					return true;
+				}
+			},
+			// 检查IP地址
+			checkIpAddress: function () {
+				let ipTest = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+
+				if (this.ipAddress === null || this.ipAddress.trim().length === 0 || this.ipAddress === undefined) {
+					this.msgIpAddress = "IP地址不能为空";
+					return false;
+				} else if (this.ipAddress === "any") {
+					this.msgIpAddress = "";
+					return true;
+				} else if (!ipTest.test(this.ipAddress)) {
+					this.msgIpAddress = "请输入正确的IP地址 或 any";
+					return false;
+				} else {
+					this.msgIpAddress = "";
+					return true;
+				}
+
+			},
+			// 检查 通配符
+			checkWildcard: function () {
+				let ipTest = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+
+				if (this.ipAddress === "any") {
+					this.msgWildcard = "";
+					return true;
+				} else if (this.wildcard === null || this.wildcard.trim().length === 0 || this.wildcard === undefined) {
+					this.msgWildcard = "通配符不能为空";
+					return false;
+				} else if (!ipTest.test(this.wildcard)) {
+					this.msgWildcard = "请输入正确的通配符";
+					return false;
+				} else {
+					this.msgWildcard = "";
+					return true;
+				}
+			},
+			// 检查 源IP
+			checkSourceIp: function () {
+				let ipTest = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+
+				if (this.sourceIp === null || this.sourceIp.trim().length === 0 || this.sourceIp === undefined) {
+					this.msgSourceIp = "IP地址不能为空";
+					return false;
+				} else if (this.sourceIp === "any") {
+					this.msgSourceIp = "";
+					return true;
+				} else if (!ipTest.test(this.sourceIp)) {
+					this.msgSourceIp = "请输入正确的IP地址 或 any";
+					return false;
+				} else {
+					this.msgSourceIp = "";
+					return true;
+				}
+
+			},
+			// 检查 目的IP
+			checkDestinationIp: function () {
+				let ipTest = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+
+				if (this.destinationIp === null || this.destinationIp.trim().length === 0 || this.destinationIp === undefined) {
+					this.msgDestinationIp = "IP地址不能为空";
+					return false;
+				} else if (this.destinationIp === "any") {
+					this.msgDestinationIp = "";
+					return true;
+				} else if (!ipTest.test(this.destinationIp)) {
+					this.msgDestinationIp = "请输入正确的IP地址 或 any";
+					return false;
+				} else {
+					this.msgDestinationIp = "";
+					return true;
+				}
+
+			},
+			// 检查 控制接口1
+			checkInterface1: function () {
+				if (this.interface1 === null || this.interface1.trim().length === 0 || this.interface1 === undefined) {
+					this.msgInterface1 = "控制接口不能为空";
+					return false;
+				} else {
+					this.msgInterface1 = "";
+					return true;
+				}
+			},
+			// 检查 控制接口2
+			checkInterface2: function () {
+				if (this.interface2 === null || this.interface2.trim().length === 0 || this.interface2 === undefined) {
+					this.msgInterface2 = "控制接口不能为空";
+					return false;
+				} else {
+					this.msgInterface2 = "";
+					return true;
+				}
+			},
+			// 检查 指定协议
+			checkProtocol: function () {
+				if (this.protocol === null || this.protocol.trim().length === 0 || this.protocol === undefined) {
+					this.msgProtocol = "指定协议不能为空";
+					return false;
+				} else {
+					this.msgProtocol = "";
+					return true;
+				}
+
+			},
+			// 检查 服务/端口号
+			checkService: function () {
+				if (this.service === null || this.service.trim().length === 0 || this.service === undefined) {
+					this.msgService = "服务/端口号不能为空";
+					return false;
+				} else {
+					this.msgService = "";
+					return true;
+				}
+			}
+		}
+	});
+
+
+</script>
+
+
+<!-- js placed at the end of the document so the pages load faster -->
+<!--<script src="assets/js/jquery.js"></script>-->
+
+
+<script src="../../assets/js/jquery-1.8.3.min.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="../../assets/js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="../../assets/js/jquery.scrollTo.min.js"></script>
+
+
+<!--<script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>-->
+<!--<script src="assets/js/jquery.sparkline.js"></script>-->
+
+
+<!--common script for all pages-->
+<script src="../../assets/js/common-scripts.js"></script>
+
+<!-- 右上角提示框-->
+<!--<script type="text/javascript" src="assets/js/gritter/js/jquery.gritter.js"></script>-->
+
+<!--<script type="text/javascript" src="assets/js/gritter-conf.js"></script>-->
+
+<!--script for this page-->
+<!--<script src="assets/js/sparkline-chart.js"></script>-->
+<!--<script src="assets/js/zabuto_calendar.js"></script>-->
+
+<!-- 开关按钮 -->
+<script src="../../assets/js/bootstrap-switch.js"></script>
+<script src="../../assets/js/form-component.js"></script>
+<script src="../../assets/js/jquery.tagsinput.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Class-Path: spring-boot-starter-jdbc-2.1.0.RELEASE.jar jackson-datatyp
+ e-jdk8-2.9.7.jar validation-api-2.0.1.Final.jar spring-boot-starter-w
+ eb-2.1.0.RELEASE.jar spring-core-5.1.2.RELEASE.jar spring-boot-autoco
+ nfigure-2.1.0.RELEASE.jar spring-tx-5.1.2.RELEASE.jar spring-boot-2.1
+ .0.RELEASE.jar jackson-core-2.9.7.jar snakeyaml-1.23.jar spring-conte
+ xt-5.1.2.RELEASE.jar logback-classic-1.2.3.jar mybatis-3.4.6.jar tomc
+ at-embed-core-9.0.12.jar jackson-annotations-2.9.0.jar jackson-module
+ -parameter-names-2.9.7.jar hibernate-validator-6.0.13.Final.jar sprin
+ g-webmvc-5.1.2.RELEASE.jar spring-boot-starter-2.1.0.RELEASE.jar myba
+ tis-spring-1.3.2.jar commons-net-3.6.jar slf4j-api-1.7.25.jar spring-
+ boot-starter-tomcat-2.1.0.RELEASE.jar spring-aop-5.1.2.RELEASE.jar my
+ batis-spring-boot-starter-1.3.2.jar HikariCP-3.2.0.jar mysql-connecto
+ r-java-8.0.13.jar classmate-1.4.0.jar spring-boot-starter-json-2.1.0.
+ RELEASE.jar tomcat-embed-el-9.0.12.jar log4j-to-slf4j-2.11.1.jar spri
+ ng-jdbc-5.1.2.RELEASE.jar spring-beans-5.1.2.RELEASE.jar tomcat-embed
+ -websocket-9.0.12.jar jackson-datatype-jsr310-2.9.7.jar spring-jcl-5.
+ 1.2.RELEASE.jar logback-core-1.2.3.jar jul-to-slf4j-1.7.25.jar spring
+ -expression-5.1.2.RELEASE.jar jackson-databind-2.9.7.jar mybatis-spri
+ ng-boot-autoconfigure-1.3.2.jar javax.annotation-api-1.3.2.jar log4j-
+ api-2.11.1.jar jboss-logging-3.3.2.Final.jar spring-web-5.1.2.RELEASE
+ .jar spring-boot-starter-logging-2.1.0.RELEASE.jar
+Main-Class: com.ie.NetworkMaintenanceSystemApplication
+

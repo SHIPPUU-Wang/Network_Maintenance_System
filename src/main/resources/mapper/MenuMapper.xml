@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ie.dao.MenuMapper">
+
+<!--	<resultMap id="BaseResultMap" type="com.ie.pojo.Menu">
+		<id column="menu_id" jdbcType="DOUBLE" property="menuId"/>
+		<result column="menu_name" jdbcType="VARCHAR" property="MenuName"/>
+		<result column="menu_url" jdbcType="VARCHAR" property="MenuUrl"/>
+	</resultMap>
+
+	<select id="findAllMenu" resultMap="BaseResultMap">
+		SELECT * FROM menu
+	</select>-->
+
+</mapper>
